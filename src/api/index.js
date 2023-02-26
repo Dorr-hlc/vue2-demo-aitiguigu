@@ -12,3 +12,7 @@ export const reqCategoryList = () =>
 
 // 获取banner首页轮播
 export const reqGetBannerList = () => mockRequests.get("/banner")
+
+// 获取floor组件的数据
+
+export const reqGetFloorList = () => mockRequests.get("/floor")

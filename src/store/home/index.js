@@ -1,9 +1,19 @@
-import { reqCategoryList, reqGetBannerList } from "@/api"
+/*
+ * @Copyright: Copyright© 2022 AOMEI
+ * @Abstract: 
+ * @Date: 2023-02-26 08:54:51
+ * @Author: 
+ * @LastEditors: houliucun
+ * @LastEditTime: 2023-02-26 09:37:42
+ * @RevisionHistory: 
+ */
+import { reqCategoryList, reqGetBannerList, reqGetFloorList } from "@/api"
 
 const state = {
     // 根据返回的初始值
     categoryList: [],
-    bannerList: []
+    bannerList: [],
+    floorList: []
 }
 const mutations = {
     CATEGORYLIST(state, categoryList) {
@@ -11,6 +21,9 @@ const mutations = {
     },
     GETBANNERLIST(state, bannerList) {
         state.bannerList = bannerList
+    },
+    GETFLOORLIST(state, floorList) {
+        state.floorList = floorList
     }
 }
 const actions = {
@@ -25,6 +38,12 @@ const actions = {
         const result = await reqGetBannerList()
         if (result.code == 200) {
             commit("GETBANNERLIST", result.data)
+        }
+    },
+    async GetFloorList({ commit }) {
+        const result = await reqGetFloorList()
+        if (result.code == 200) {
+            commit("GETFLOORLIST", result.data)
         }
     }
 }
