@@ -190,6 +190,18 @@ export default {
       this.$store.dispatch("reqGetSearchList", this.searchParams);
     },
   },
+  watch: {
+    immediate: true,
+    //监听路由的信息，如果发生了变化，证明用户重新操作了，需要重新发起请求
+    $route(newValue, oldValue) {
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      this.getData();
+      // 每次请求完毕，需要把相应的123级分类的id置空，方便下次的请求的接受相应的数据
+      this.searchParams.category1Id = "";
+      this.searchParams.category2Id = "";
+      this.searchParams.category3Id = "";
+    },
+  },
 };
 </script>
 

@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="type-wrap" v-for="(attr, index) in attrsList" :key="attr.attrId">
-      <div class="fl key">网络制式</div>
+      <div class="fl key">{{attr.attrName}}</div>
       <div class="fl value">
         <ul class="type-list">
           <li v-for="(attrValue, index) in attr.attrValueList" :key="index">
@@ -35,6 +35,7 @@ export default {
   computed: {
     ...mapGetters(["trademarkList","attrsList"]),
   },
+
 };
 </script>
 

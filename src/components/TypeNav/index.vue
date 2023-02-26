@@ -109,8 +109,9 @@ export default {
     // },
     leaveShow() {
       this.currentIndex = "-1";
-
-      if (this.$route.path == "/search") {
+           console.log('3123',this.$route.name);
+      if (this.$route.name == "search") {
+   
         this.show = false;
       }
     },
