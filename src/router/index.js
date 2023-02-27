@@ -20,23 +20,23 @@ const router = new VueRouter({
     routes: [
         {
             path: "/",
-            component:()=>import("@/pages/Home/index"),
+            component: () => import("@/pages/Home/index"),
             meta: {
                 footerShow: true,
-                typeNavShow:true
+                typeNavShow: true
             },
         },
         {
             path: "/login",
-            component:()=>import("@/pages/Login/index"),
+            component: () => import("@/pages/Login/index"),
         },
         {
             name: "search",
             path: "/search/:keyword?",
-            component:()=>import("@/pages/Search/index"),
+            component: () => import("@/pages/Search/index"),
             meta: {
                 footerShow: true,
-                typeNavShow:false
+                typeNavShow: false
             },
             // 路由组件传参
             // props: true
@@ -56,7 +56,7 @@ const router = new VueRouter({
         },
         {
             path: "/register",
-            component:()=>import("@/pages/Register/index"),
+            component: () => import("@/pages/Register/index"),
         },
         // 重定向
         { path: "*", redirect: '/' },
@@ -64,5 +64,21 @@ const router = new VueRouter({
 
 
 })
+let originPush = VueRouter.prototype.push;
+let originReplace = VueRouter.prototype.replace;
+VueRouter.prototype.push = function (location, resolve, reject) {
+    if (resolve && reject) {
+        originPush.call(this, location, resolve, reject);
+    } else {
+        originPush.call(this, location, () => { }, () => { })
+    }
+}
+VueRouter.prototype.replace = function (location, resolve, reject) {
+    if (resolve && reject) {
+        originReplace.call(this, location, resolve, reject);
+    } else {
+        originReplace.call(this, location, () => { }, () => { })
+    }
+}
 
 export default router

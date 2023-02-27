@@ -24,10 +24,17 @@ import '@/mock/mockServer'
 import store from '@/store'
 // 引入路由
 import router from "@/router"
+
+
+
 new Vue({
   render: h => h(App),
   // 注册路由
   router,
   // 注册仓库：组件实例的就多一个$store属性
-  store
+  store,
+  // 配置全局事件总线
+  beforeCreate() {
+    Vue.prototype.$bus = this
+  }
 }).$mount('#app')

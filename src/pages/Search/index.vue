@@ -11,15 +11,25 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName
+              }}<i @click="removeCategoryName">×</i>
+            </li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyword">×</i>
+            </li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1]
+              }}<i @click="removeTrademark">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -178,7 +188,6 @@ export default {
     // this.searchParams.categoryName = this.$route.query.categoryName;
     // this.searchParams.keyword = this.$route.query.keyword;
     // this.searchParams.trademark = this.$route.query.trademark;
-
     // 对象合并
     Object.assign(this.searchParams, this.$route.query, this.$route.params);
   },
@@ -188,6 +197,38 @@ export default {
   methods: {
     getData() {
       this.$store.dispatch("reqGetSearchList", this.searchParams);
+    },
+    removeCategoryName() {
+      // 如果属性值为空的字段依然会发送给服务器，但是把空字符串改为undefined，就不会发送给服务器端
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      this.searchParams.categoryName = undefined;
+      this.getData();
+      // 地址栏的路由也需要修改，进行路由的跳转
+      if (this.$route.params) {
+        this.$router.push({ name: "search", params: this.$route.params });
+      }
+    },
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      this.getData();
+      // 置空header组件中的input 输入框的值。也就是兄弟组件传值,使用全局事件总线，也可以使用vuex,这里使用全局事件总线
+      this.$bus.$emit("clear");
+      if (this.$route.query) {
+        this.$router.push({ name: "search", params: this.$route.query });
+      }
+    },
+    // 移除品牌关键字
+    removeTrademark() {
+      this.searchParams.trademark = undefined;
+      this.getData();
+    },
+    // 自定义事件的回调
+    trademarkInfo(trademark) {
+      console.log("父组件", trademark);
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
     },
   },
   watch: {
