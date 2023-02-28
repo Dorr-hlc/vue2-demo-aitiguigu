@@ -25,34 +25,32 @@
               {{ searchParams.trademark.split(":")[1]
               }}<i @click="removeTrademark">×</i>
             </li>
+            <!-- 属性的面包屑 -->
+            <li
+              class="with-x"
+              v-for="(attrVlaue, index) in searchParams.props"
+              :key="index"
+            >
+              {{ attrVlaue.split(":")[1]
+              }}<i @click="removeAttrValue(index)">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo" />
+
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }">
+                  <a href="javascript:;">综合</a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isTwo }">
+                  <a href="javascript:;">销量</a>
                 </li>
               </ul>
             </div>
@@ -140,6 +138,7 @@
 <script>
 import SearchSelector from "./SearchSelector/SearchSelector";
 import { mapState, mapGetters } from "vuex";
+import search from "@/store/search";
 export default {
   name: "Search",
   components: {
@@ -162,7 +161,7 @@ export default {
         // 品牌的参数
         trademark: "",
         // 排序
-        order: "",
+        order: "2:desc",
         // 分页的参数
         pageNo: 1,
         pageSize: 3,
@@ -180,6 +179,12 @@ export default {
 
     // mapGetters里面的写法，传递的是数组，因为getters没有划分模块，需要划分模块是要命名空间的
     ...mapGetters(["goodsList"]),
+    isOne() {
+      return this.searchParams.order.indexOf("1") != -1;
+    },
+    isTwo() {
+      return this.searchParams.order.indexOf("2") != -1;
+    },
   },
   beforeMount() {
     // this.searchParams.category1Id = this.$route.query.category1Id;
@@ -224,11 +229,26 @@ export default {
       this.searchParams.trademark = undefined;
       this.getData();
     },
+
+    removeAttrValue(index) {
+      this.searchParams.props.splice(index, 1);
+      this.getData();
+    },
     // 自定义事件的回调
     trademarkInfo(trademark) {
       console.log("父组件", trademark);
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
       this.getData();
+    },
+    //
+    attrInfo(attr, attrValue) {
+      console.log(attr, attrValue);
+      // 整理参数格式
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      if (this.searchParams.props.indexOf(props) === -1) {
+        this.searchParams.props.push(props);
+        this.getData();
+      }
     },
   },
   watch: {
